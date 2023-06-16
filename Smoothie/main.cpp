@@ -6,10 +6,10 @@
 #include <string>
 #include "Mesh.h"
 #include "MeshRenderer.h"
-#include <vec3.hpp> // glm::vec3
-#include <vec4.hpp> // glm::vec4
-#include <mat4x4.hpp> // glm::mat4
-#include <gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+#include <vec3.hpp>
+#include <vec4.hpp>
+#include <mat4x4.hpp>
+#include <gtc/matrix_transform.hpp>
 
 const GLint WIDTH = 800, HEIGHT = 600;
 static void GLClearError()
@@ -26,10 +26,9 @@ static bool GLLogCall(unsigned long frame)
     return true;
 }
 
-// The MAIN function, from here we start the application and run the game loop
 int main()
 {
-    // Init GLFW
+    std::cout << "Smoothie 0.1" << std::endl;
     glfwInit();
 
     // Set all the required options for GLFW
@@ -37,10 +36,8 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    // Create a GLFWwindow object that we can use for GLFW's functions
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Smoothie", nullptr, nullptr);
 
     int screenWidth, screenHeight;
@@ -55,43 +52,41 @@ int main()
     }
 
     glfwMakeContextCurrent(window);
-
-    // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
     glewExperimental = GL_TRUE;
-    // Initialize GLEW to setup the OpenGL Function pointers
     if (GLEW_OK != glewInit())
     {
         std::cout << "Failed to initialize GLEW" << std::endl;
         return EXIT_FAILURE;
     }
     glEnable(GL_DEPTH_TEST);
-    // Define the viewport dimensions
     glViewport(0, 0, screenWidth, screenHeight);
 
+    std::cout << "Loading shaders and meshes" << std::endl;
     Shader shaderProgram("Shaders/Basic.shader");
     MeshRenderer testowyModel(&shaderProgram);
     GLLogCall(0);
 
-    std::cout << "Global lighting" << std::endl;
+    std::cout << "Calculating global lighting" << std::endl;
     shaderProgram.Activate();
     glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), 1, 1, 1, 1);
     glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), 0, 0, 0);
     GLLogCall(0);
 
-    Camera camera(WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f), 0.1f, 1.0f);
+    Camera camera(WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f), 0.1f, 20.0f);
 
     bool running = true;
     unsigned long frame{ 0 };
     GLLogCall(0);
-    std::cout << "Game loop started!" << std::endl;
+    std::cout << "Main loop started!" << std::endl;
 
-    // Game loop
+    // Main loop
     while (!glfwWindowShouldClose(window))
     {
-        // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
+        //User input
         glfwPollEvents();
-        camera.HandleInput();
+        camera.HandleInput(window);
 
+        //Drawing
         glClearColor(0.82f, 0.82f, 0.82f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -107,9 +102,9 @@ int main()
         GLLogCall(frame);
         frame++;
     }
+
     shaderProgram.Delete();
-    // Terminate GLFW, clearing any resources allocated by GLFW.
     glfwTerminate();
+    std::cout << "Smoothie 0.1" << std::endl;
     return EXIT_SUCCESS;
 }
-

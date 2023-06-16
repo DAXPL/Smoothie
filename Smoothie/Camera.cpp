@@ -1,5 +1,5 @@
 #include "Camera.h"
-
+//https://www.glfw.org/docs/3.3/group__keys.html
 Camera::Camera(int _width, int _height, glm::vec3 _pos, float _speed, float _sens)
 {
 	width = _width;
@@ -25,38 +25,40 @@ void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
 	cameraMatrix = projection * view;
 }
 
-void Camera::HandleInput()
+void Camera::HandleInput(GLFWwindow* window)
 {
-	/*
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
 		position += speed * orientation;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
 		position += speed * -glm::normalize(glm::cross(orientation, up));
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
 		position += speed * -orientation;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
 		position += speed * glm::normalize(glm::cross(orientation, up));
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
 		position += speed * up;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) || sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
 		position += speed * -up;
 	}
-
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
+	
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
-		double mouseX { (double)sf::Mouse::getPosition(window).x };
-		double mouseY { (double)sf::Mouse::getPosition(window).y };
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+		double mouseX{ 0 };
+		double mouseY{ 0 };
+		glfwGetCursorPos(window, &mouseX, &mouseY);
 
 		if (IsMouseOverWindow(mouseX, mouseY)) return;
 
@@ -74,8 +76,13 @@ void Camera::HandleInput()
 
 		//Obraca lewo/prawo
 		orientation = glm::rotate(orientation, glm::radians(-rotY), up);
+		glfwSetCursorPos(window, (width / 2), (height / 2));
 	}
-	*/
+	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+	{
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+	
 }
 
 bool Camera::IsMouseOverWindow(double& x, double& y) 
