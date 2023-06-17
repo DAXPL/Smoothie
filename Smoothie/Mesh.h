@@ -23,5 +23,6 @@ public:
 	~Mesh();
 	void UpdateMesh();
 	void Draw(Shader& shader, Camera& camera);
-	void UpdateVert(int id);
+	void UpdateVert(int id, glm::vec3 moveVec);
+	glm::vec3 GetVertPos(int id);
 };

@@ -1,4 +1,8 @@
 //https://www.youtube.com/watch?v=ukDmQl9Cz6c
+#include <cstdlib>
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include <iostream>
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -12,6 +16,7 @@
 #include <gtc/matrix_transform.hpp>
 
 const GLint WIDTH = 800, HEIGHT = 600;
+
 static void GLClearError()
 {
     while (glGetError() != GL_NO_ERROR);
@@ -25,7 +30,17 @@ static bool GLLogCall(unsigned long frame)
     }
     return true;
 }
-
+float vec3Magnitude(glm::vec3 vec) 
+{
+    float magnitude = vec.x + vec.y + vec.z;
+    return abs(magnitude);
+}
+int ClampInt(int a, int min, int max) 
+{
+    if (a < min) a = min;
+    if (a > max) a = max;
+    return a;
+}
 int main()
 {
     std::cout << "Smoothie 0.1" << std::endl;
@@ -74,34 +89,66 @@ int main()
 
     Camera camera(WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f), 0.1f, 20.0f);
 
+    //IMGUI
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
+
+    int selectedVert{ 0 };
+
     bool running = true;
     unsigned long frame{ 0 };
     GLLogCall(0);
     std::cout << "Main loop started!" << std::endl;
-
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
-        //User input
+        //Input
         glfwPollEvents();
-        camera.HandleInput(window);
-
-        //Drawing
+        
+        //Clear screen
         glClearColor(0.82f, 0.82f, 0.82f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        //Prepare and handle UI
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::Begin("Smoothie UI");
+        ImGui::Text("Vertex manipulation");
+
+        glm::vec3 vertPos = testowyModel.GetMeshVertPosition(selectedVert);
+        glm::vec3 inputPosition(vertPos.x, vertPos.y, vertPos.z);
+
+        ImGui::InputInt("Select vert",&selectedVert);
+        selectedVert = ClampInt(selectedVert, 0, testowyModel.MeshVericiesCount()-1);
+        ImGui::InputFloat("X", &inputPosition.x);
+        ImGui::InputFloat("Y", &inputPosition.y);
+        ImGui::InputFloat("Z", &inputPosition.z);
+
+        if(vec3Magnitude(inputPosition - vertPos)>0) testowyModel.UpdateVertexPosition(selectedVert, inputPosition);
+
+        ImGui::End();
+
+        camera.HandleInput(window);
         camera.updateMatrix(45.0f, 0.1f, 100.0f);
-
-        testowyModel.UpdateVertexPosition();
         testowyModel.DrawMesh(camera);
-
-
-        // Swap the screen buffers
+        
+        //Display
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
-
         GLLogCall(frame);
         frame++;
     }
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui::DestroyContext();
 
     shaderProgram.Delete();
     glfwTerminate();

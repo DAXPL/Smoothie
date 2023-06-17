@@ -1,5 +1,9 @@
 #include "EBO.h"
-
+/*
+Element Buffer Object
+An EBO is a buffer, just like a vertex buffer object, that stores indices that OpenGL uses to decide what vertices to draw. 
+This so called indexed drawing is exactly the solution to our problem.
+*/
 EBO::EBO(std::vector<GLuint>& indices)
 {
 	glGenBuffers(1, &ID);//1 bo mamy jeden obiekt i paczka vertow tego obiektu

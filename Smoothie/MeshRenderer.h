@@ -12,7 +12,9 @@ public:
     void DrawMesh(Camera& camera);
     void SetShader(Shader* _shader);
 
-    void UpdateVertexPosition();
+    void UpdateVertexPosition(int id, glm::vec3 moveVec);
+    glm::vec3 GetMeshVertPosition(int id);
+    int MeshVericiesCount();
 private:
     Mesh* mesh;
     Shader* objectShader;

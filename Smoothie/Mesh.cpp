@@ -89,8 +89,15 @@ void Mesh::UpdateMesh()
     ebo->Unbind();//to zawsze na koniec
 }
 
-void Mesh::UpdateVert(int id)
+void Mesh::UpdateVert(int id, glm::vec3 moveVec)
 {
-    verticies.at(id).position.y += 0.001f;
+    if (id >= verticies.size()) return;
+
+    verticies.at(id).position = moveVec;
     vbo->UpdateBufferData(verticies);
+}
+glm::vec3 Mesh::GetVertPos(int id) 
+{
+    if (id >= verticies.size()) return glm::vec3(0, 0, 0);
+    return verticies.at(id).position;
 }

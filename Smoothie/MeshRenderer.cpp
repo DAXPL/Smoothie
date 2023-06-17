@@ -38,7 +38,15 @@ void MeshRenderer::SetShader(Shader* shader)
 	glUniformMatrix4fv(glGetUniformLocation(objectShader->ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
 }
 
-void MeshRenderer::UpdateVertexPosition()
+void MeshRenderer::UpdateVertexPosition(int id, glm::vec3 moveVec)
 {
-	mesh->UpdateVert(0);
+	mesh->UpdateVert(id, moveVec);
+}
+glm::vec3 MeshRenderer::GetMeshVertPosition(int id)
+{
+	return mesh->GetVertPos(id);
+}
+int MeshRenderer::MeshVericiesCount() 
+{
+	return vertices.size();
 }
