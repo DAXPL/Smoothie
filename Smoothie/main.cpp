@@ -41,12 +41,34 @@ int ClampInt(int a, int min, int max)
     if (a > max) a = max;
     return a;
 }
+void ManageUI(MeshRenderer* workMesh, int* vert)
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::Begin("Smoothie UI");
+    ImGui::Text("Vertex manipulation");
+
+    glm::vec3 vertPos = workMesh->GetMeshVertPosition(*vert);
+    glm::vec3 inputPosition(vertPos.x, vertPos.y, vertPos.z);
+
+    ImGui::InputInt("Select vert", vert);
+    *vert = ClampInt(*vert, 0, workMesh->MeshVericiesCount() - 1);
+    ImGui::InputFloat("X", &inputPosition.x);
+    ImGui::InputFloat("Y", &inputPosition.y);
+    ImGui::InputFloat("Z", &inputPosition.z);
+
+    if (vec3Magnitude(inputPosition - vertPos) > 0) workMesh->UpdateVertexPosition(*vert, inputPosition);
+
+    ImGui::End();
+}
 int main()
 {
     std::cout << "Smoothie 0.1" << std::endl;
     glfwInit();
 
-    // Set all the required options for GLFW
+    //GLFW options
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -54,9 +76,6 @@ int main()
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Smoothie", nullptr, nullptr);
-
-    int screenWidth, screenHeight;
-    glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
 
     if (nullptr == window)
     {
@@ -74,11 +93,14 @@ int main()
         return EXIT_FAILURE;
     }
     glEnable(GL_DEPTH_TEST);
-    glViewport(0, 0, screenWidth, screenHeight);
+    glViewport(0, 0, WIDTH, HEIGHT);
 
     std::cout << "Loading shaders and meshes" << std::endl;
     Shader shaderProgram("Shaders/Basic.shader");
-    MeshRenderer testowyModel(&shaderProgram);
+    MeshRenderer workMesh(&shaderProgram);
+    workMesh.LoadMeshFromFile("BaseMesh.msh");
+    //workMesh.AddVertex();
+
     GLLogCall(0);
 
     std::cout << "Calculating global lighting" << std::endl;
@@ -92,15 +114,12 @@ int main()
     //IMGUI
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO(); 
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-
     int selectedVert{ 0 };
-
-    bool running = true;
     unsigned long frame{ 0 };
     GLLogCall(0);
     std::cout << "Main loop started!" << std::endl;
@@ -115,29 +134,11 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //Prepare and handle UI
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        ImGui::Begin("Smoothie UI");
-        ImGui::Text("Vertex manipulation");
-
-        glm::vec3 vertPos = testowyModel.GetMeshVertPosition(selectedVert);
-        glm::vec3 inputPosition(vertPos.x, vertPos.y, vertPos.z);
-
-        ImGui::InputInt("Select vert",&selectedVert);
-        selectedVert = ClampInt(selectedVert, 0, testowyModel.MeshVericiesCount()-1);
-        ImGui::InputFloat("X", &inputPosition.x);
-        ImGui::InputFloat("Y", &inputPosition.y);
-        ImGui::InputFloat("Z", &inputPosition.z);
-
-        if(vec3Magnitude(inputPosition - vertPos)>0) testowyModel.UpdateVertexPosition(selectedVert, inputPosition);
-
-        ImGui::End();
+        ManageUI(&workMesh, &selectedVert);
 
         camera.HandleInput(window);
         camera.updateMatrix(45.0f, 0.1f, 100.0f);
-        testowyModel.DrawMesh(camera);
+        workMesh.DrawMesh(camera);
         
         //Display
         ImGui::Render();
@@ -152,6 +153,6 @@ int main()
 
     shaderProgram.Delete();
     glfwTerminate();
-    std::cout << "Smoothie 0.1" << std::endl;
+    std::cout << "End" << std::endl;
     return EXIT_SUCCESS;
 }

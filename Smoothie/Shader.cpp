@@ -4,7 +4,7 @@ A Vertex Shader in OpenGL is a piece of C like code written to the GLSL specific
 Vertex shaders can be used to modify properties of the vertex such as position, color, and texture coordinates.
 A Fragment Shader is similar to a Vertex Shader, but is used for calculating individual fragment colors. This is where lighting and bump-mapping effects are performed.
 */
-Shader::Shader(const char* filepath)
+Shader::Shader(const char* filepath, bool debugInfo)
 {
     std::ifstream stream(filepath);
     enum class ShaderType
@@ -30,10 +30,14 @@ Shader::Shader(const char* filepath)
         }
     }
     
-    std::cout << "Shaders parsed!" << std::endl;
-    std::cout << "vertex: " << std::endl << sources[1]<< std::endl;
-    std::cout << "fragment:"<< std::endl << sources[2]<< std::endl;
-    std::cout << "trash:" << std::endl << sources[0] << std::endl;
+    if (debugInfo)
+    {
+        std::cout << "Shaders parsed!" << std::endl;
+        std::cout << "vertex: " << std::endl << sources[1] << std::endl;
+        std::cout << "fragment:" << std::endl << sources[2] << std::endl;
+        std::cout << "trash:" << std::endl << sources[0] << std::endl;
+    }
+    
     
 
     ID =  CreateShader(sources[1], sources[2]);

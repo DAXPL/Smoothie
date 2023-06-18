@@ -9,7 +9,7 @@ class Shader
 {
 public: 
 	unsigned int ID;
-	Shader(const char* file);
+	Shader(const char* file, bool debugInfo = false);
 
 	void Activate();
 	void Delete();

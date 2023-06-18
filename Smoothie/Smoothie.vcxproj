@@ -168,12 +168,29 @@
     <ClInclude Include="EBO.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshRenderer.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="STB.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\Brick.jpg" />
+    <Image Include="Textures\Brick_DISP.jpg" />
+    <Image Include="Textures\Brick_NORMAL.jpg" />
+    <Image Include="Textures\Brick_SPECULAR.jpg" />
+    <Image Include="Textures\obamium.jpg" />
+    <Image Include="Textures\planks.png" />
+    <Image Include="Textures\planksSpec.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Basic.shader" />
+    <None Include="Shaders\BasicLight.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Smoothie.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

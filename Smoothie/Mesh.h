@@ -13,6 +13,7 @@ class Mesh
 	std::vector <Vertex> verticies;
 	std::vector <GLuint> indicies;
 	std::vector <Texture> textures;
+	
 
 	VAO* vao;
 	VBO* vbo;
@@ -22,7 +23,10 @@ public:
 	Mesh(std::vector <Vertex>& _verticies, std::vector <GLuint>& _indicies, std::vector <Texture>& _textures);
 	~Mesh();
 	void UpdateMesh();
+	void PutNewVert(Vertex v);
+	void PutNewIndices(int i);
 	void Draw(Shader& shader, Camera& camera);
 	void UpdateVert(int id, glm::vec3 moveVec);
 	glm::vec3 GetVertPos(int id);
+	int VericiesInMeshCount();
 };
