@@ -47,7 +47,7 @@ void MeshRenderer::LoadMeshFromFile(const char* fileName)
 	while (getline(input, line))
 	{
 		//std::cout << line << std::endl;
-		std::vector<float> parameters {explode(line, ',')};
+		std::vector<float> parameters {Explode(line, ',')};
 		glm::vec3 coords{ 0,0,0 };
 		glm::vec3 colors{ 0,0,0 };
 		glm::vec3 normals{ 0,0,0 };
@@ -85,7 +85,6 @@ void MeshRenderer::LoadMeshFromFile(const char* fileName)
 			for (int i = 0; i < indLen; i++) 
 			{
 				ind[i] = (int)parameters[i+11];
-				std::cout << ind[i] << std::endl;
 			}
 		}
 		Vertex nv = Vertex{ coords, colors, normals, texCoords };
@@ -94,15 +93,17 @@ void MeshRenderer::LoadMeshFromFile(const char* fileName)
 	input.close();
 	mesh->UpdateMesh();
 }
+
 void MeshRenderer::SaveMeshToFile(const char* fileName)
 {
-	
+	std::cout << "Not yet implemented!" << fileName << std::endl;
 }
 
 void MeshRenderer::DrawMesh(Camera& camera)
 {
 	mesh->Draw(*objectShader, camera);
 }
+
 void MeshRenderer::SetShader(Shader* shader)
 {
 	/*
@@ -117,20 +118,23 @@ void MeshRenderer::SetShader(Shader* shader)
 	pyramidModel = glm::translate(pyramidModel, position);
 	glUniformMatrix4fv(glGetUniformLocation(objectShader->ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
 }
+
 void MeshRenderer::UpdateVertexPosition(int id, glm::vec3 moveVec)
 {
 	mesh->UpdateVert(id, moveVec);
 }
+
 glm::vec3 MeshRenderer::GetMeshVertPosition(int id)
 {
 	return mesh->GetVertPos(id);
 }
+
 int MeshRenderer::MeshVericiesCount() 
 {
 	return mesh->VericiesInMeshCount();
 }
 
-std::vector<float> MeshRenderer::explode(std::string& s, const char& c)
+std::vector<float> MeshRenderer::Explode(std::string& s, const char& c)
 {
 	std::string buff{ "" };
 	std::vector<float> v;

@@ -25,5 +25,5 @@ public:
 private:
     Mesh* mesh;
     Shader* objectShader;
-    std::vector<float> explode(std::string& s, const char& c);
+    std::vector<float> Explode(std::string& s, const char& c);
 };

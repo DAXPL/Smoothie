@@ -1,6 +1,6 @@
 #include "Shader.h"
 /*
-A Vertex Shader in OpenGL is a piece of C like code written to the GLSL specification which influences the attributes of a vertex. 
+A Vertex Shader is a piece of C like code written to the GLSL specification which influences the attributes of a vertex. 
 Vertex shaders can be used to modify properties of the vertex such as position, color, and texture coordinates.
 A Fragment Shader is similar to a Vertex Shader, but is used for calculating individual fragment colors. This is where lighting and bump-mapping effects are performed.
 */
@@ -15,6 +15,7 @@ Shader::Shader(const char* filepath, bool debugInfo)
     std::string line;
     std::string sources[3];
     ShaderType type = ShaderType::NONE;
+
     while (getline(stream, line))
     {
         if (line.find("#shader") != std::string::npos)
@@ -33,15 +34,14 @@ Shader::Shader(const char* filepath, bool debugInfo)
     if (debugInfo)
     {
         std::cout << "Shaders parsed!" << std::endl;
-        std::cout << "vertex: " << std::endl << sources[1] << std::endl;
-        std::cout << "fragment:" << std::endl << sources[2] << std::endl;
-        std::cout << "trash:" << std::endl << sources[0] << std::endl;
+        std::cout << "Vertex shader: " << std::endl << sources[1] << std::endl;
+        std::cout << "Fragment shader:" << std::endl << sources[2] << std::endl;
+        std::cout << "Trash data:" << std::endl << sources[0] << std::endl;
     }
-    
-    
 
     ID =  CreateShader(sources[1], sources[2]);
 }
+
 unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
     unsigned int program = glCreateProgram();
@@ -53,6 +53,7 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
     glAttachShader(program, fs);
     glLinkProgram(program);
     glValidateProgram(program);
+
     //Error handling
     int result;
     glGetProgramiv(program, GL_LINK_STATUS, &result);
@@ -60,8 +61,7 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
     {
         std::cout << "FAILED TO LINK " << std::endl;
     }
-    //shadery dolaczone - mozemy zwolnic pamiec
-    //chill - sa juz zapisane w programie
+    //shadery dolaczone do programu - mozemy zwolnic pamiec
     glDeleteShader(vs);
     glDeleteShader(fs);
 
@@ -70,7 +70,7 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 {
     unsigned int id = glCreateShader(type);
-    const char* src = source.c_str();//lub &source[0] - wskaznik do poczatku 
+    const char* src = source.c_str();//wskaznik do poczatku 
     glShaderSource(id, 1, &src, nullptr);//co, ile, wskaznik do wskaznika do zrodla, dlugosc
     glCompileShader(id);
 

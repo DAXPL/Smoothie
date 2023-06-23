@@ -43,10 +43,12 @@ void Camera::HandleInput(GLFWwindow* window)
 	{
 		position += speed * glm::normalize(glm::cross(orientation, up));
 	}
+	//Gora
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
 		position += speed * up;
 	}
+	//Dol
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
 		position += speed * -up;
@@ -62,10 +64,10 @@ void Camera::HandleInput(GLFWwindow* window)
 
 		if (IsMouseOverWindow(mouseX, mouseY)) return;
 
-		float rotX{ sensitivity * (float)(mouseY - (height / 2)) / height };
-		float rotY{sensitivity * (float)(mouseX - (width / 2)) / width};
+		float rotX{sensitivity * (float)(mouseY - (height / 2)) / height};
+		float rotY{sensitivity * (float)(mouseX - (width / 2))  / width};
 
-		//Obraca gora/dol
+		//Obraca gora/dol (pitch?)
 		glm::vec3 newOrientation {glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up))) };
 
 		// Ogranicza obrot
@@ -74,7 +76,7 @@ void Camera::HandleInput(GLFWwindow* window)
 			orientation = newOrientation;
 		}
 
-		//Obraca lewo/prawo
+		//Obraca lewo/prawo (yaw?)
 		orientation = glm::rotate(orientation, glm::radians(-rotY), up);
 		glfwSetCursorPos(window, (width / 2), (height / 2));
 	}

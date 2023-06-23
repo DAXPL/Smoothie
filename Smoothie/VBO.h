@@ -4,7 +4,8 @@
 #include <glm.hpp>
 #include <vector>
 /*
-Klasa odpowiada za Vertex Buffer
+A Vertex Buffer Object (VBO) is a memory buffer in the high speed memory of your video card designed to hold information about vertices.
+Vertex Buffer 
 https://www.khronos.org/opengl/wiki/Vertex_Specification
 */
 struct Vertex 
@@ -14,6 +15,7 @@ struct Vertex
 	glm::vec3 color;
 	glm::vec2 texUV;
 };
+
 class VBO
 {
 public:

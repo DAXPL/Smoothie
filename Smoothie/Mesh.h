@@ -14,7 +14,6 @@ class Mesh
 	std::vector <GLuint> indicies;
 	std::vector <Texture> textures;
 	
-
 	VAO* vao;
 	VBO* vbo;
 	EBO* ebo;

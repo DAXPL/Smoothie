@@ -40,17 +40,20 @@ Mesh::~Mesh()
     delete ebo;
     delete vbo;
 }
+
 void Mesh::PutNewVert(Vertex v)
 {
     verticies.push_back(v);
 }
+
 void Mesh::PutNewIndices(int i)
 {
     indicies.push_back(i);
 }
+
 void Mesh::Draw(Shader& shader, Camera& camera)
 {
-    if (vao == nullptr)return;
+    if (vao == nullptr || vbo==nullptr || ebo==nullptr) return;
     shader.Activate();
     vao->Bind();
     unsigned int numDiffuse{ 0 };
@@ -70,7 +73,7 @@ void Mesh::Draw(Shader& shader, Camera& camera)
         }
         else 
         {
-            std::cout << "Texture type not recognized!" << std::endl;
+            std::cout << "Wrong texture type!" << std::endl;
         }
         textures[i].texUnit(shader, (type + num).c_str(), i);
         textures[i].Bind();
@@ -109,11 +112,13 @@ void Mesh::UpdateVert(int id, glm::vec3 moveVec)
     verticies.at(id).position = moveVec;
     vbo->UpdateBufferData(verticies);
 }
+
 glm::vec3 Mesh::GetVertPos(int id) 
 {
     if (id >= verticies.size()) return glm::vec3(0, 0, 0);
     return verticies.at(id).position;
 }
+
 int Mesh::VericiesInMeshCount() 
 {
     return verticies.size();

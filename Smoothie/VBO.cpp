@@ -1,7 +1,5 @@
 #include "VBO.h"
-/*
-A Vertex Buffer Object (VBO) is a memory buffer in the high speed memory of your video card designed to hold information about vertices.
-*/
+
 VBO::VBO(std::vector <Vertex>& vertices)
 {
 	glGenBuffers(1, &ID);//1 bo mamy jeden obiekt i paczka vertow tego obiektu

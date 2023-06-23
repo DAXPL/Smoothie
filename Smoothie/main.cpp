@@ -1,4 +1,8 @@
-//https://www.youtube.com/watch?v=ukDmQl9Cz6c
+/*
+Mi³osz Klim 2023
+Technologie Komputerowe semestr IV
+Projekt zaliczeniowy na przedmiot Zaawansowane jêzyki programowania
+*/
 #include <cstdlib>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -21,6 +25,7 @@ static void GLClearError()
 {
     while (glGetError() != GL_NO_ERROR);
 }
+
 static bool GLLogCall(unsigned long frame)
 {
     while (GLenum error = glGetError())
@@ -30,17 +35,20 @@ static bool GLLogCall(unsigned long frame)
     }
     return true;
 }
+
 float vec3Magnitude(glm::vec3 vec) 
 {
     float magnitude = vec.x + vec.y + vec.z;
     return abs(magnitude);
 }
+
 int ClampInt(int a, int min, int max) 
 {
     if (a < min) a = min;
     if (a > max) a = max;
     return a;
 }
+
 void ManageUI(MeshRenderer* workMesh, int* vert)
 {
     ImGui_ImplOpenGL3_NewFrame();
@@ -63,11 +71,12 @@ void ManageUI(MeshRenderer* workMesh, int* vert)
 
     ImGui::End();
 }
+
 int main()
 {
     std::cout << "Smoothie 0.1" << std::endl;
-    glfwInit();
 
+    glfwInit();
     //GLFW options
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -84,14 +93,15 @@ int main()
 
         return EXIT_FAILURE;
     }
-
     glfwMakeContextCurrent(window);
+
     glewExperimental = GL_TRUE;
     if (GLEW_OK != glewInit())
     {
         std::cout << "Failed to initialize GLEW" << std::endl;
         return EXIT_FAILURE;
     }
+
     glEnable(GL_DEPTH_TEST);
     glViewport(0, 0, WIDTH, HEIGHT);
 
@@ -99,8 +109,6 @@ int main()
     Shader shaderProgram("Shaders/Basic.shader");
     MeshRenderer workMesh(&shaderProgram);
     workMesh.LoadMeshFromFile("BaseMesh.msh");
-    //workMesh.AddVertex();
-
     GLLogCall(0);
 
     std::cout << "Calculating global lighting" << std::endl;
@@ -111,29 +119,27 @@ int main()
 
     Camera camera(WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f), 0.1f, 20.0f);
 
-    //IMGUI
+    std::cout << "IMGUI setup" << std::endl;
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); 
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
+    GLLogCall(0);
 
     int selectedVert{ 0 };
     unsigned long frame{ 0 };
-    GLLogCall(0);
+
     std::cout << "Main loop started!" << std::endl;
-    // Main loop
     while (!glfwWindowShouldClose(window))
     {
-        //Input
         glfwPollEvents();
         
-        //Clear screen
+        //Render stage
         glClearColor(0.82f, 0.82f, 0.82f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //Prepare and handle UI
         ManageUI(&workMesh, &selectedVert);
 
         camera.HandleInput(window);
@@ -145,6 +151,7 @@ int main()
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
         GLLogCall(frame);
+
         frame++;
     }
     ImGui_ImplOpenGL3_Shutdown();
@@ -153,6 +160,6 @@ int main()
 
     shaderProgram.Delete();
     glfwTerminate();
-    std::cout << "End" << std::endl;
+    std::cout << "Bye ;)" << std::endl;
     return EXIT_SUCCESS;
 }

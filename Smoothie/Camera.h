@@ -25,9 +25,7 @@ public:
 	float sensitivity{100.0f};
 
 	Camera(int _width, int _height, glm::vec3 _pos, float _speed, float _sens);
-	// Updates the camera matrix to the Vertex Shader
 	void updateMatrix(float FOVdeg, float nearPlane, float farPlane);
-	// Exports the camera matrix to a shader
 	void Matrix(Shader& shader, const char* uniform);
 	void HandleInput(GLFWwindow* window);
 private:
